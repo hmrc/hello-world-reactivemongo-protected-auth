@@ -18,3 +18,4 @@ class HelloWorldService @Inject()(repo: HelloWorldRepository)(implicit ec: Execu
     }
 
 }
+
