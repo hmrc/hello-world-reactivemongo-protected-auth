@@ -3,13 +3,13 @@ package uk.gov.hmrc.helloworldreactivemongo.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc._
-import uk.gov.hmrc.helloworldreactivemongo.services.HelloWorldService
+import uk.gov.hmrc.helloworldreactivemongo.services.{AuthorizedHelloWorldService, NotAuthorizedHelloWorldService}
 import uk.gov.hmrc.play.bootstrap.controller.BaseController
 
 import scala.concurrent.ExecutionContext
 
 @Singleton()
-class MicroserviceHelloWorld @Inject()(helloService: HelloWorldService)(implicit val ec: ExecutionContext)
+class MicroserviceHelloWorld @Inject()(authorizedHelloService: AuthorizedHelloWorldService, nonAuthorizedHelloService: NotAuthorizedHelloWorldService)(implicit val ec: ExecutionContext)
     extends BaseController {
 
   def hello() = Action {
@@ -17,7 +17,13 @@ class MicroserviceHelloWorld @Inject()(helloService: HelloWorldService)(implicit
   }
 
   def testMongo() = Action.async {
-    helloService.addObjectAndCountAll().map { count =>
+    authorizedHelloService.addObjectAndCountAll().map { count =>
+      Ok(Json.obj("count" -> count))
+    }
+  }
+
+  def testMongoNonAuthorized() = Action.async {
+    nonAuthorizedHelloService.addObjectAndCountAll().map { count =>
       Ok(Json.obj("count" -> count))
     }
   }

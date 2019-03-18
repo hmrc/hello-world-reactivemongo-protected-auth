@@ -6,13 +6,13 @@ import akka.actor.ActorSystem
 import com.google.inject.AbstractModule
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
-import uk.gov.hmrc.helloworldreactivemongo.services.HelloWorldService
+import uk.gov.hmrc.helloworldreactivemongo.services.AuthorizedHelloWorldService
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.FiniteDuration
 
 @Singleton
-class MongoHelloWorldScheduler @Inject()(service: HelloWorldService, actorSystem: ActorSystem)(
+class MongoHelloWorldScheduler @Inject()(service: AuthorizedHelloWorldService, actorSystem: ActorSystem)(
   implicit val ec: ExecutionContext) {
 
   private val logger = Logger(getClass)
