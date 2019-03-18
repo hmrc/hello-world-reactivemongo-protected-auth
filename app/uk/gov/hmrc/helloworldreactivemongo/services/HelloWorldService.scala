@@ -30,5 +30,5 @@ class AuthorizedHelloWorldService @Inject()(val repo: HelloWorldRepository)(impl
 @Singleton
 class NotAuthorizedHelloWorldService @Inject()(val nonAuthorizedRepositoryHolder : NotAuthorizedHelloWorldRepositoryHolder)(implicit val ec: ExecutionContext)
   extends HelloWorldService {
-  override val repo: HelloWorldRepository = nonAuthorizedRepositoryHolder.unathorizedRepository
+  override val repo: HelloWorldRepository = nonAuthorizedRepositoryHolder.repositoryAccessingUnauthorizedDatabase
 }
