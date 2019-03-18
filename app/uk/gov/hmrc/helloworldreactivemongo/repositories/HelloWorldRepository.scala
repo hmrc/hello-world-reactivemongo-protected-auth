@@ -34,7 +34,7 @@ class NotAuthorizedHelloWorldRepositoryHolder @Inject()(configuration: Configura
     throw new RuntimeException("mongodb.notAuthorizedUri key not found")
   ))
 
-  val reactiveMongoComponent = new ReactiveMongoComponentImpl(configuration, environment, lifecycle)
+  val reactiveMongoComponent = new ReactiveMongoComponentImpl(newConfiguration, environment, lifecycle)
 
   lazy val unathorizedRepository = new HelloWorldRepository(reactiveMongoComponent)
 
