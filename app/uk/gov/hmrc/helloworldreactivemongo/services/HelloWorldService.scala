@@ -2,15 +2,12 @@ package uk.gov.hmrc.helloworldreactivemongo.services
 
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
-import uk.gov.hmrc.helloworldreactivemongo.repositories.{HelloWorld, HelloWorldRepository, NotAuthorizedHelloWorldRepositoryHolder}
+import uk.gov.hmrc.helloworldreactivemongo.repositories.{HelloWorld, HelloWorldRepository}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait HelloWorldService {
-
-  val repo : HelloWorldRepository
-
-  implicit val ec : ExecutionContext
+@Singleton
+class HelloWorldService @Inject()(repo: HelloWorldRepository)(implicit ec: ExecutionContext) {
 
   private val logger = Logger(getClass)
 
@@ -22,13 +19,4 @@ trait HelloWorldService {
       }
     }
 
-}
-
-@Singleton
-class AuthorizedHelloWorldService @Inject()(val repo: HelloWorldRepository)(implicit val ec: ExecutionContext) extends HelloWorldService
-
-@Singleton
-class NotAuthorizedHelloWorldService @Inject()(val nonAuthorizedRepositoryHolder : NotAuthorizedHelloWorldRepositoryHolder)(implicit val ec: ExecutionContext)
-  extends HelloWorldService {
-  override val repo: HelloWorldRepository = nonAuthorizedRepositoryHolder.repositoryAccessingUnauthorizedDatabase
 }

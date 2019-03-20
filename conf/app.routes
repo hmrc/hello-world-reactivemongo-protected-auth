@@ -2,4 +2,4 @@
 
 GET        /hello-world                 uk.gov.hmrc.helloworldreactivemongo.controllers.MicroserviceHelloWorld.hello
 GET        /test-mongo                  uk.gov.hmrc.helloworldreactivemongo.controllers.MicroserviceHelloWorld.testMongo
-GET        /test-mongo-non-authorized   uk.gov.hmrc.helloworldreactivemongo.controllers.MicroserviceHelloWorld.testMongoNonAuthorized
+GET        /test-authorization          uk.gov.hmrc.helloworldreactivemongo.controllers.AuthorizationVerificationController.verifyAuthorization
