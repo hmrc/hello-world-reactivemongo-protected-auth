@@ -4,6 +4,8 @@ import javax.inject.{Inject, Singleton}
 import play.api.inject.ApplicationLifecycle
 import play.api.{Configuration, Environment}
 import play.modules.reactivemongo.ReactiveMongoComponentImpl
+import reactivemongo.play.json.collection.JSONCollection
+import uk.gov.hmrc.helloworldreactivemongo.repositories.HelloWorld
 import uk.gov.hmrc.helloworldreactivemongo.utils.MongoUrl
 
 import scala.concurrent.{Await, ExecutionContext}
@@ -38,12 +40,21 @@ class AuthorizationVerificationService @Inject() (configuration: Configuration,
       configuration = configuration ++ Configuration("mongodb.uri" -> scenario.mongoDbUrl),
       environment = environment,
       lifecycle = lifecycle)
-    Try {
-      val db = reactiveMongo.mongoConnector.db()
-      Await.result(db.connection.askClose()(60 seconds), 60 seconds)
-    } match {
-      case Success(_) => ValidationResult(scenario.description + scenario.mongoDbUrl + "original uri: " + baseMongodbUri,  scenario.shouldSucceed, None)
-      case Failure(exception) => ValidationResult(scenario.description + scenario.mongoDbUrl + "original uri: " + baseMongodbUri, !scenario.shouldSucceed, Some(exception.getMessage))
+
+    val tryDb = Try {
+      reactiveMongo.mongoConnector.db()
+    }
+    val outcome = tryDb.flatMap {
+       db => Try {
+         Await.result(db.collection[JSONCollection]("test").insert(HelloWorld.random), 30 seconds)
+       }
+    }
+
+    tryDb.foreach(_.connection.askClose()(30 seconds))
+
+    outcome match {
+      case Success(_) => ValidationResult(scenario.description,  scenario.shouldSucceed, None)
+      case Failure(exception) => ValidationResult(scenario.description, !scenario.shouldSucceed, Some(exception.getMessage))
     }
 
   }
