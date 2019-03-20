@@ -40,7 +40,7 @@ class AuthorizationVerificationService @Inject() (configuration: Configuration,
       lifecycle = lifecycle)
     Try {
       val db = reactiveMongo.mongoConnector.db()
-      Await.result(db.connection.askClose()(30 seconds), 30 seconds)
+      Await.result(db.connection.askClose()(60 seconds), 60 seconds)
     } match {
       case Success(_) => ValidationResult(scenario.description + scenario.mongoDbUrl + "original uri: " + baseMongodbUri,  scenario.shouldSucceed, None)
       case Failure(exception) => ValidationResult(scenario.description + scenario.mongoDbUrl + "original uri: " + baseMongodbUri, !scenario.shouldSucceed, Some(exception.getMessage))
