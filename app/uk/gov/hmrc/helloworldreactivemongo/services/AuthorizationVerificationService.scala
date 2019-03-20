@@ -6,8 +6,9 @@ import play.api.{Configuration, Environment}
 import play.modules.reactivemongo.ReactiveMongoComponentImpl
 import uk.gov.hmrc.helloworldreactivemongo.utils.MongoUrl
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{Await, ExecutionContext}
 import scala.util.{Failure, Success, Try}
+import scala.concurrent.duration._
 
 case class Scenario(mongoDbUrl : String, shouldSucceed : Boolean, description : String)
 
@@ -39,7 +40,7 @@ class AuthorizationVerificationService @Inject() (configuration: Configuration,
       lifecycle = lifecycle)
     Try {
       val db = reactiveMongo.mongoConnector.db()
-      db.connection.close()
+      Await.result(db.connection.askClose()(30 seconds), 30 seconds)
     } match {
       case Success(_) => ValidationResult(scenario.description, scenario.shouldSucceed, None)
       case Failure(exception) => ValidationResult(scenario.description, !scenario.shouldSucceed, Some(exception.getMessage))
