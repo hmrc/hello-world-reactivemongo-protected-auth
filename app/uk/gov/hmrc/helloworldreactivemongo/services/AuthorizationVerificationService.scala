@@ -26,11 +26,14 @@ class AuthorizationVerificationService @Inject() (configuration: Configuration,
 
   private lazy val parsedUri = MongoUrl.parse(baseMongodbUri)
 
+  private lazy val parsedUriWithLessChannels = parsedUri.copy(params = Some(parsedUri.params
+    .map(_ + "&rm.nbChannelsPerNode=3").getOrElse("&rm.nbChannelsPerNode=3")))
+
   lazy val scenarios = List(
-    Scenario(parsedUri.print, shouldSucceed = true, "Valid connection"),
-    Scenario(parsedUri.copy(database = Some("invalidDatabase")).print, shouldSucceed = false, "Unauthorised database"),
-    Scenario(parsedUri.copy(authPart = parsedUri.authPart.map(_.copy(login = "invalid"))).print, shouldSucceed = false, "Invalid username"),
-    Scenario(parsedUri.copy(authPart = parsedUri.authPart.map(_.copy(password = Some("invalid")))).print, shouldSucceed = false, "Invalid password")
+    Scenario(parsedUriWithLessChannels.print, shouldSucceed = true, "Valid connection"),
+    Scenario(parsedUriWithLessChannels.copy(database = Some("invalidDatabase")).print, shouldSucceed = false, "Unauthorised database"),
+    Scenario(parsedUriWithLessChannels.copy(authPart = parsedUri.authPart.map(_.copy(login = "invalid"))).print, shouldSucceed = false, "Invalid username"),
+    Scenario(parsedUriWithLessChannels.copy(authPart = parsedUri.authPart.map(_.copy(password = Some("invalid")))).print, shouldSucceed = false, "Invalid password")
   )
 
   def performChecks(): Seq[ValidationResult] = scenarios.map(runScenario)
