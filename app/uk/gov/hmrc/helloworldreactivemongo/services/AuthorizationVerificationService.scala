@@ -43,7 +43,7 @@ class AuthorizationVerificationService @Inject() (configuration: Configuration,
       Await.result(db.connection.askClose()(30 seconds), 30 seconds)
     } match {
       case Success(_) => ValidationResult(scenario.description + scenario.mongoDbUrl + "original uri: " + baseMongodbUri,  scenario.shouldSucceed, None)
-      case Failure(exception) => ValidationResult(scenario.description + "/", !scenario.shouldSucceed, Some(exception.getMessage))
+      case Failure(exception) => ValidationResult(scenario.description + scenario.mongoDbUrl + "original uri: " + baseMongodbUri, !scenario.shouldSucceed, Some(exception.getMessage))
     }
 
   }
