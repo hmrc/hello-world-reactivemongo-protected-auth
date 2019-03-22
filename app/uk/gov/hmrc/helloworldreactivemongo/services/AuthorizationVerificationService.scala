@@ -53,7 +53,7 @@ class AuthorizationVerificationService @Inject() (configuration: Configuration,
        }
     }
 
-    tryDb.foreach(db => Await.result(db.connection.askClose()(30 seconds), 30 seconds))
+    tryDb.foreach(db => reactiveMongo.mongoConnector.close())
 
     outcome match {
       case Success(_) => ValidationResult(scenario.description,  scenario.shouldSucceed, None)
