@@ -46,18 +46,16 @@ class AuthorizationVerificationService @Inject() (configuration: Configuration,
       environment = environment,
       lifecycle = lifecycle)
 
-    val tryDb = Try {
-      reactiveMongo.mongoConnector.db()
-    }
-    val outcome = tryDb.flatMap {
-       db => Try {
-         Await.result(db.collection[JSONCollection]("test").insert(HelloWorld.random), 30 seconds)
-       }
-    }
+    val result = for {
+      db <- Try(reactiveMongo.mongoConnector.db())
+      _  <- Try {
+        Await.result(db.collection[JSONCollection]("test").insert(HelloWorld.random), 30 seconds)
+      }
+    } yield ()
 
     reactiveMongo.mongoConnector.close()
 
-    outcome match {
+    result match {
       case Success(_) => ValidationResult(scenario.description,  scenario.shouldSucceed, None)
       case Failure(exception) => ValidationResult(scenario.description, !scenario.shouldSucceed, Some(exception.getMessage))
     }
