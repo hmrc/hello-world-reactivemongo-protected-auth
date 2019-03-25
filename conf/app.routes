@@ -1,4 +1,5 @@
 # microservice specific routes
 
-GET        /hello-world             uk.gov.hmrc.helloworldreactivemongo.controllers.MicroserviceHelloWorld.hello
-GET        /test-mongo              uk.gov.hmrc.helloworldreactivemongo.controllers.MicroserviceHelloWorld.testMongo
+GET        /hello-world                 uk.gov.hmrc.helloworldreactivemongo.controllers.MicroserviceHelloWorld.hello
+GET        /test-mongo                  uk.gov.hmrc.helloworldreactivemongo.controllers.MicroserviceHelloWorld.testMongo
+GET        /test-authorization          uk.gov.hmrc.helloworldreactivemongo.controllers.AuthorizationVerificationController.verifyAuthorization
