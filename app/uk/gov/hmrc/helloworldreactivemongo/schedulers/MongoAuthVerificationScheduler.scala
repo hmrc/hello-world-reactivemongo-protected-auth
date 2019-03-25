@@ -17,7 +17,7 @@ class MongoAuthVerificationScheduler @Inject()(service: AuthorizationVerificatio
 
   private val logger = Logger(getClass)
 
-  val interval = FiniteDuration(60, TimeUnit.SECONDS)
+  val interval = FiniteDuration(360, TimeUnit.SECONDS)
 
   logger.info(s"Initialising verification of mongo authorization $interval")
 
